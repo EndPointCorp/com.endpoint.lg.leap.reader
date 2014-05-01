@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<project type="activity" builder="java">
+    <name>LEAP Reader Activity</name>
+    <description>
+Activity for publishing LEAP events to ROS.
+    </description>
+
+    <identifyingName>com.endpoint.lg.leap.reader</identifyingName>
+    <version>1.0.0.dev</version>
+</project>
