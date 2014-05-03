@@ -25,6 +25,8 @@ import interactivespaces.service.image.gesture.GesturePointable;
 import interactivespaces.service.image.gesture.GestureListener;
 import interactivespaces.service.image.gesture.GestureHandListener;
 import interactivespaces.service.image.gesture.GesturePointableListener;
+import interactivespaces.util.data.json.JsonBuilder;
+import static com.endpoint.lg.support.message.GestureMessages.*;
 
 import java.util.Map;
 
@@ -45,18 +47,33 @@ public class LeapReaderActivity extends BaseRoutableRosActivity {
     leapEndpoint.addGestureListener(new GestureListener() {
       public void onGestures(Map<String, Gesture> gestures) {
         getLog().info(String.format("got gestures: %s", gestures.toString()));
+
+        JsonBuilder msg = new JsonBuilder();
+        serializeGestures(gestures, msg);
+
+        sendOutputJsonBuilder("gestures", msg);
       }
     });
 
     leapEndpoint.addHandListener(new GestureHandListener() {
       public void onGestureHands(Map<String, GestureHand> hands) {
         getLog().info(String.format("got hands: %s", hands.toString()));
+
+        JsonBuilder msg = new JsonBuilder();
+        serializeGestureHands(hands, msg);
+
+        sendOutputJsonBuilder("hands", msg);
       }
     });
 
     leapEndpoint.addPointableListener(new GesturePointableListener() {
       public void onGesturePointables(Map<String, GesturePointable> pointables) {
         getLog().info(String.format("got pointables: %s", pointables.toString()));
+
+        JsonBuilder msg = new JsonBuilder();
+        serializeGesturePointables(pointables, msg);
+
+        sendOutputJsonBuilder("pointables", msg);
       }
     });
 
