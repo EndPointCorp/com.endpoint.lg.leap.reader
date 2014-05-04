@@ -26,57 +26,96 @@ import interactivespaces.service.image.gesture.GestureListener;
 import interactivespaces.service.image.gesture.GestureHandListener;
 import interactivespaces.service.image.gesture.GesturePointableListener;
 import interactivespaces.util.data.json.JsonBuilder;
-import static com.endpoint.lg.support.message.GestureMessages.*;
+
+import com.endpoint.lg.support.message.GestureMessages;
 
 import java.util.Map;
 
 /**
- * A LEAP event publisher activity.
+ * A LEAP event publisher activity. Only handles events when the activity is
+ * activated.
  * 
  * @author Matt Vollrath <matt@endpoint.com>
  */
 public class LeapReaderActivity extends BaseRoutableRosActivity {
+  /**
+   * The LEAP endpoint, from which events spring.
+   */
+  private GestureEndpoint leapEndpoint;
+
+  /**
+   * Listener for gesture events.
+   */
+  private GestureListener gestureListener = new GestureListener() {
+    public void onGestures(Map<String, Gesture> gestures) {
+      JsonBuilder msg = new JsonBuilder();
+      GestureMessages.serializeGestures(gestures, msg);
+
+      sendOutputJsonBuilder("gestures", msg);
+
+      getLog().debug(String.format("sent gestures: %s", msg.toString()));
+    }
+  };
+
+  /**
+   * Listener for hand events.
+   */
+  private GestureHandListener handListener = new GestureHandListener() {
+    public void onGestureHands(Map<String, GestureHand> hands) {
+      JsonBuilder msg = new JsonBuilder();
+      GestureMessages.serializeGestureHands(hands, msg);
+
+      sendOutputJsonBuilder("hands", msg);
+
+      getLog().debug(String.format("sent hands: %s", msg.toString()));
+    }
+  };
+
+  /**
+   * Listener for pointable events.
+   */
+  private GesturePointableListener pointableListener = new GesturePointableListener() {
+    public void onGesturePointables(Map<String, GesturePointable> pointables) {
+      JsonBuilder msg = new JsonBuilder();
+      GestureMessages.serializeGesturePointables(pointables, msg);
+
+      sendOutputJsonBuilder("pointables", msg);
+
+      getLog().debug(String.format("sent pointables: %s", msg.toString()));
+    }
+  };
+
+  /**
+   * Starts up a LEAP endpoint.
+   */
   @Override
   public void onActivitySetup() {
     LeapMotionGestureService leapSvc =
         getSpaceEnvironment().getServiceRegistry()
             .getService(LeapMotionGestureService.SERVICE_NAME);
 
-    GestureEndpoint leapEndpoint = leapSvc.newGestureEndpoint(getLog());
-
-    leapEndpoint.addGestureListener(new GestureListener() {
-      public void onGestures(Map<String, Gesture> gestures) {
-        getLog().info(String.format("got gestures: %s", gestures.toString()));
-
-        JsonBuilder msg = new JsonBuilder();
-        serializeGestures(gestures, msg);
-
-        sendOutputJsonBuilder("gestures", msg);
-      }
-    });
-
-    leapEndpoint.addHandListener(new GestureHandListener() {
-      public void onGestureHands(Map<String, GestureHand> hands) {
-        getLog().info(String.format("got hands: %s", hands.toString()));
-
-        JsonBuilder msg = new JsonBuilder();
-        serializeGestureHands(hands, msg);
-
-        sendOutputJsonBuilder("hands", msg);
-      }
-    });
-
-    leapEndpoint.addPointableListener(new GesturePointableListener() {
-      public void onGesturePointables(Map<String, GesturePointable> pointables) {
-        getLog().info(String.format("got pointables: %s", pointables.toString()));
-
-        JsonBuilder msg = new JsonBuilder();
-        serializeGesturePointables(pointables, msg);
-
-        sendOutputJsonBuilder("pointables", msg);
-      }
-    });
+    leapEndpoint = leapSvc.newGestureEndpoint(getLog());
 
     addManagedResource(leapEndpoint);
+  }
+
+  /**
+   * Hooks up the messaging listeners.
+   */
+  @Override
+  public void onActivityActivate() {
+    leapEndpoint.addGestureListener(gestureListener);
+    leapEndpoint.addHandListener(handListener);
+    leapEndpoint.addPointableListener(pointableListener);
+  }
+
+  /**
+   * Unhooks the messaging listeners.
+   */
+  @Override
+  public void onActivityDeactivate() {
+    leapEndpoint.removeGestureListener(gestureListener);
+    leapEndpoint.removeHandListener(handListener);
+    leapEndpoint.removePointableListener(pointableListener);
   }
 }
