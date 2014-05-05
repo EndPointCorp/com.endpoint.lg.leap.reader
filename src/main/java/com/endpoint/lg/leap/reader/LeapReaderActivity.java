@@ -39,6 +39,25 @@ import java.util.Map;
  */
 public class LeapReaderActivity extends BaseRoutableRosActivity {
   /**
+   * Configuration key for reading gestures.
+   */
+  public static final String CONFIG_GESTURES_ENABLED = "lg.leap.reader.gestures.enabled";
+
+  /**
+   * Configuration key for reading hands.
+   */
+  public static final String CONFIG_HANDS_ENABLED = "lg.leap.reader.hands.enabled";
+
+  /**
+   * Configuration key for reading pointables.
+   */
+  public static final String CONFIG_POINTABLES_ENABLED = "lg.leap.reader.pointables.enabled";
+
+  private boolean gesturesEnabled;
+  private boolean handsEnabled;
+  private boolean pointablesEnabled;
+
+  /**
    * The LEAP endpoint, from which events spring.
    */
   private GestureEndpoint leapEndpoint;
@@ -97,6 +116,10 @@ public class LeapReaderActivity extends BaseRoutableRosActivity {
     leapEndpoint = leapSvc.newGestureEndpoint(getLog());
 
     addManagedResource(leapEndpoint);
+
+    gesturesEnabled = getConfiguration().getRequiredPropertyBoolean(CONFIG_GESTURES_ENABLED);
+    handsEnabled = getConfiguration().getRequiredPropertyBoolean(CONFIG_HANDS_ENABLED);
+    pointablesEnabled = getConfiguration().getRequiredPropertyBoolean(CONFIG_POINTABLES_ENABLED);
   }
 
   /**
@@ -104,9 +127,14 @@ public class LeapReaderActivity extends BaseRoutableRosActivity {
    */
   @Override
   public void onActivityActivate() {
-    leapEndpoint.addGestureListener(gestureListener);
-    leapEndpoint.addHandListener(handListener);
-    leapEndpoint.addPointableListener(pointableListener);
+    if (gesturesEnabled)
+      leapEndpoint.addGestureListener(gestureListener);
+
+    if (handsEnabled)
+      leapEndpoint.addHandListener(handListener);
+
+    if (pointablesEnabled)
+      leapEndpoint.addPointableListener(pointableListener);
   }
 
   /**
@@ -114,8 +142,13 @@ public class LeapReaderActivity extends BaseRoutableRosActivity {
    */
   @Override
   public void onActivityDeactivate() {
-    leapEndpoint.removeGestureListener(gestureListener);
-    leapEndpoint.removeHandListener(handListener);
-    leapEndpoint.removePointableListener(pointableListener);
+    if (gesturesEnabled)
+      leapEndpoint.removeGestureListener(gestureListener);
+
+    if (handsEnabled)
+      leapEndpoint.removeHandListener(handListener);
+
+    if (pointablesEnabled)
+      leapEndpoint.removePointableListener(pointableListener);
   }
 }
