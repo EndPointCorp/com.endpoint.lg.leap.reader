@@ -6,7 +6,7 @@ Java package: com.endpoint.lg.leap.reader
 Liquid Galaxy Interactive Spaces activity for publishing LEAP events to ROS.
 
 
-Copyright (C) 2015 Google Inc.
+Copyright (C) 2015 Google Inc.  
 Copyright (C) 2015 End Point Corporation
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not
