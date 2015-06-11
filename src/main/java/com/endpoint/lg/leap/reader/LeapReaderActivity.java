@@ -26,7 +26,7 @@ import interactivespaces.service.image.gesture.GesturePointable;
 import interactivespaces.service.image.gesture.GestureListener;
 import interactivespaces.service.image.gesture.GestureHandListener;
 import interactivespaces.service.image.gesture.GesturePointableListener;
-import interactivespaces.util.data.json.JsonBuilder;
+import interactivespaces.util.data.json.StandardJsonBuilder;
 
 import com.endpoint.lg.support.message.GestureMessages;
 
@@ -68,7 +68,7 @@ public class LeapReaderActivity extends BaseRoutableRosActivity {
    */
   private GestureListener gestureListener = new GestureListener() {
     public void onGestures(Map<String, Gesture> gestures) {
-      JsonBuilder msg = new JsonBuilder();
+      StandardJsonBuilder msg = new StandardJsonBuilder();
       GestureMessages.serializeGestures(gestures, msg);
 
       sendOutputJsonBuilder("gestures", msg);
@@ -82,7 +82,7 @@ public class LeapReaderActivity extends BaseRoutableRosActivity {
    */
   private GestureHandListener handListener = new GestureHandListener() {
     public void onGestureHands(Map<String, GestureHand> hands) {
-      JsonBuilder msg = new JsonBuilder();
+      StandardJsonBuilder msg = new StandardJsonBuilder();
       GestureMessages.serializeGestureHands(hands, msg);
 
       sendOutputJsonBuilder("hands", msg);
@@ -96,7 +96,7 @@ public class LeapReaderActivity extends BaseRoutableRosActivity {
    */
   private GesturePointableListener pointableListener = new GesturePointableListener() {
     public void onGesturePointables(Map<String, GesturePointable> pointables) {
-      JsonBuilder msg = new JsonBuilder();
+      StandardJsonBuilder msg = new StandardJsonBuilder();
       GestureMessages.serializeGesturePointables(pointables, msg);
 
       sendOutputJsonBuilder("pointables", msg);

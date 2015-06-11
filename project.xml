@@ -7,4 +7,41 @@ Activity for publishing LEAP events to ROS.
 
     <identifyingName>com.endpoint.lg.leap.reader</identifyingName>
     <version>1.0.0.dev</version>
+
+    <activity type="interactivespaces_native">
+        <name>LEAP Reader</name>
+        <class>com.endpoint.lg.leap.reader.LeapReaderActivity</class>
+        <configuration>
+            <property name="space.activity.log.level">
+                <value>info</value>
+            </property>
+            <property name="space.activity.ros.node.name">
+                <value>liquidgalaxy/leap/${space.activity.group}</value>
+            </property>
+            <property name="space.activity.routes.outputs">
+                <value>gestures:hands:pointables</value>
+            </property>
+            <property name="space.activity.route.output.gestures">
+                <value>/liquidgalaxy/${space.activity.group}/leap/gestures</value>
+            </property>
+            <property name="space.activity.route.output.hands">
+                <value>/liquidgalaxy/${space.activity.group}/leap/hands</value>
+            </property>
+            <property name="space.activity.route.output.pointables">
+                <value>/liquidgalaxy/${space.activity.group}/leap/pointables</value>
+            </property>
+            <!-- ### Track gestures? -->
+            <property name="lg.leap.reader.gestures.enabled">
+                <value>true</value>
+            </property>
+            <!-- ### Track hands? -->
+            <property name="lg.leap.reader.hands.enabled">
+                <value>true</value>
+            </property>
+            <!-- ### Track pointables? -->
+            <property name="lg.leap.reader.pointables.enabled">
+                <value>true</value>
+            </property>
+        </configuration>
+    </activity>
 </project>
